@@ -8,8 +8,6 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    // отвечает за бизнес логику
-
     private final UserDao userDao = new UserDaoJDBCImpl();
 
 
@@ -22,7 +20,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        userDao.saveUser(name,lastName,age);
+        userDao.saveUser(name, lastName, age);
     }
 
     public void removeUserById(long id) {
@@ -30,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-        return userDao.getAllUsers() ;
+        return userDao.getAllUsers();
     }
 
     public void cleanUsersTable() {

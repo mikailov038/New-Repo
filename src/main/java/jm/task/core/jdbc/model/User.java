@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Table
-public class  User {
+public class User {
     @Id
     private Long id;
 
@@ -22,8 +22,6 @@ public class  User {
     public User() {
 
     }
-
-
 
 
     public User(String name, String lastName, Byte age) {
