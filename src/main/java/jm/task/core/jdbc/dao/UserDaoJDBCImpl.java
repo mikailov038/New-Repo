@@ -17,18 +17,6 @@ public class UserDaoJDBCImpl implements UserDao {
     Connection connection = util.getConnection();
 
     private String sql;
-
-
-//        Util util = new Util();
-//
-//        String query = "select * users";
-//        try {
-//            Statement statement = util.getConnection().createStatement();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-
-
     public UserDaoJDBCImpl() {
 
     }
@@ -43,6 +31,8 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Table is created");
+            connection.commit();
+            connection.rollback();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -54,6 +44,8 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Table is dropped");
+            connection.commit();
+            connection.rollback();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -68,6 +60,8 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
+            connection.commit();
+            connection.rollback();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -77,6 +71,8 @@ public class UserDaoJDBCImpl implements UserDao {
         sql = "DELETE FROM users  WHERE id = ? ";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
+            connection.commit();
+            connection.rollback();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -92,6 +88,8 @@ public class UserDaoJDBCImpl implements UserDao {
                 a.add(new User(r.getNString(2),
                         r.getNString(3),
                         r.getByte(4)));
+                connection.commit();
+                connection.rollback();
             }
 
         } catch (SQLException e) {
@@ -105,6 +103,8 @@ public class UserDaoJDBCImpl implements UserDao {
         sql = " TRUNCATE TABLE users ";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
+            connection.commit();
+            connection.rollback();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
