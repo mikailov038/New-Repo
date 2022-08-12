@@ -12,6 +12,8 @@ import java.util.List;
 
 
 public class UserDaoJDBCImpl implements UserDao {
+    boolean needRollback = true;
+
     private Util util;
     private String sql;
 
@@ -32,13 +34,17 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate(sql);
             System.out.println("Table is created");
             connection.commit();
+            needRollback = false;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException el) {
-                el.printStackTrace();
-            }
             throw new RuntimeException(e);
+        } finally {
+            if (needRollback) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -50,13 +56,17 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate(sql);
             System.out.println("Table is dropped");
             connection.commit();
+            needRollback = false;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException el) {
-                el.printStackTrace();
-            }
             throw new RuntimeException(e);
+        } finally {
+            if (needRollback) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -70,13 +80,17 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
             connection.commit();
+            needRollback = false;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException el) {
-                el.printStackTrace();
-            }
             throw new RuntimeException(e);
+        } finally {
+            if (needRollback) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -87,9 +101,17 @@ public class UserDaoJDBCImpl implements UserDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             connection.commit();
-            connection.rollback();
+            needRollback = false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (needRollback) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
@@ -105,15 +127,18 @@ public class UserDaoJDBCImpl implements UserDao {
                         r.getNString(3),
                         r.getByte(4)));
                 connection.commit();
-                connection.rollback();
+                needRollback = false;
             }
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException el) {
-                el.printStackTrace();
-            }
             throw new RuntimeException(e);
+        } finally {
+            if (needRollback) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         return a;
     }
@@ -125,13 +150,17 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             connection.commit();
+            needRollback = false;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException el) {
-                el.printStackTrace();
-            }
             throw new RuntimeException(e);
+        } finally {
+            if (needRollback) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }
