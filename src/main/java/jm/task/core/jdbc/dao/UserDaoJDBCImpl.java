@@ -34,15 +34,12 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate(sql);
             System.out.println("Table is created");
             connection.commit();
-            needRollback = false;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (needRollback) {
+            if (connection != null) {
                 try {
                     connection.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -56,15 +53,12 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate(sql);
             System.out.println("Table is dropped");
             connection.commit();
-            needRollback = false;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (needRollback) {
+            if (connection != null) {
                 try {
                     connection.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -80,15 +74,12 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
             connection.commit();
-            needRollback = false;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (needRollback) {
+            if (connection != null) {
                 try {
                     connection.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -101,15 +92,12 @@ public class UserDaoJDBCImpl implements UserDao {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             connection.commit();
-            needRollback = false;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (needRollback) {
+            if (connection != null) {
                 try {
                     connection.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -130,13 +118,11 @@ public class UserDaoJDBCImpl implements UserDao {
                 needRollback = false;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (needRollback) {
+            if (connection != null) {
                 try {
                     connection.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -150,15 +136,12 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             connection.commit();
-            needRollback = false;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (needRollback) {
+            if (connection != null) {
                 try {
                     connection.rollback();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                } catch (SQLException ex) {
+                    e.printStackTrace();
                 }
             }
         }
