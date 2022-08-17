@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.dao;
 
+
 import com.mysql.cj.jdbc.StatementImpl;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
@@ -23,25 +24,22 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
 
-        Connection connection = util.getConnection();
+        try (Connection connection = util.getConnection()) {
 
-        sql = "CREATE TABLE IF NOT EXISTS users " +
-                "(id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY ," +
-                " name VARCHAR(20), " +
-                " lastname VARCHAR(20), " +
-                " age INTEGER);";
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
-            System.out.println("Table is created");
-            connection.commit();
-        } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException ex) {
-                    e.printStackTrace();
-                }
+            sql = "CREATE TABLE IF NOT EXISTS users " +
+                    "(id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY ," +
+                    " name VARCHAR(20), " +
+                    " lastname VARCHAR(20), " +
+                    " age INTEGER);";
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate(sql);
+                System.out.println("Table is created");
+                connection.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -106,14 +104,14 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         Connection connection = util.getConnection();
 
-        List<User> a = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         sql = "Select * from users";
         try (Statement statement = connection.createStatement()) {
-            ResultSet r = statement.executeQuery(sql);
-            while (r.next()) {
-                a.add(new User(r.getNString(2),
-                        r.getNString(3),
-                        r.getByte(4)));
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                users.add(new User(resultSet.getNString(2),
+                        resultSet.getNString(3),
+                        resultSet.getByte(4)));
                 connection.commit();
                 needRollback = false;
             }
@@ -126,7 +124,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 }
             }
         }
-        return a;
+        return users;
     }
 
     public void cleanUsersTable() {

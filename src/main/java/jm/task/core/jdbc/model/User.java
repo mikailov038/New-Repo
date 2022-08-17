@@ -1,14 +1,16 @@
 package jm.task.core.jdbc.model;
 
 import javax.annotation.processing.Generated;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Table
+
+@Entity
+@Table(name="users")
+
 public class User {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;   //TODO: обрати внимание про id
 
     @Column
     private String name;
