@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Queue;
 
 public class UserDaoHibernateImpl implements UserDao {
+
+    public static Transaction transaction = null;
     public UserDaoHibernateImpl() {
 
     }
-
-
     @Override
     public void createUsersTable() {
 
@@ -29,7 +29,6 @@ public class UserDaoHibernateImpl implements UserDao {
                 " name VARCHAR(20), " +
                 " lastname VARCHAR(20), " +
                 " age INTEGER);";
-                Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.createNativeQuery(sql, User.class).executeUpdate();
@@ -48,9 +47,14 @@ public class UserDaoHibernateImpl implements UserDao {
     public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS users";
         try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.createNativeQuery(sql, User.class).executeUpdate();
             transaction.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
     }
@@ -59,12 +63,17 @@ public class UserDaoHibernateImpl implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         String sql = "insert into users ( name, lastname, age) values (:name, :lastname, :age)";
         try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+             transaction = session.beginTransaction();
             session.createNativeQuery(sql, User.class)
                 .setParameter("name", name)
                 .setParameter("lastname", lastName)
                 .setParameter("age", age).executeUpdate();
             transaction.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
     }
@@ -75,6 +84,11 @@ public class UserDaoHibernateImpl implements UserDao {
         String sql = "Select * from users";
         try (Session session = Util.getSessionFactory().openSession()) {
             users = session.createNativeQuery(sql, User.class).list();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
         return users;
     }
@@ -84,21 +98,30 @@ public class UserDaoHibernateImpl implements UserDao {
     public void removeUserById(long id) {
         String sql = "DELETE FROM users  WHERE id = :id";
         try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.createNativeQuery(sql, User.class).setParameter("id", id).executeUpdate();
             transaction.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
     }
-
 
     @Override
     public void cleanUsersTable() {
       String sql = " TRUNCATE TABLE users ";
         try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.createNativeQuery(sql, User.class).executeUpdate();
             transaction.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 }
