@@ -43,6 +43,7 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.executeUpdate(sql);
             System.out.println("Table is dropped");
             connection.commit();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
