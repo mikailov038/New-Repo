@@ -10,6 +10,7 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -28,11 +29,16 @@ public class UserDaoHibernateImpl implements UserDao {
                 " name VARCHAR(20), " +
                 " lastname VARCHAR(20), " +
                 " age INTEGER);";
-
+                Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.createNativeQuery(sql, User.class).executeUpdate();
             transaction.commit();
+        } catch (Exception e){
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
 
