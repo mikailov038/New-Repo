@@ -19,6 +19,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     public static Transaction transaction = null;
     public UserDaoHibernateImpl() {
+
     }
     @Override
     public void createUsersTable() {
